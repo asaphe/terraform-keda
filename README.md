@@ -7,6 +7,18 @@ This module should run as part of a deployment to ensure a scaledobject has been
 * Terraform version 1.0.0
 * Kubernetes provider - enable experimental manifest
 
+## Provider section
+
+```hcl
+provider "kubernetes" {
+  experiments {manifest_resource = true}
+
+  host                   = data.aws_eks_cluster.eks.endpoint
+  cluster_ca_certificate = base64decode(data.aws_eks_cluster.eks.certificate_authority[0].data)
+  token                  = data.aws_eks_cluster_auth.auth.token
+}
+```
+
 ## Supports
 
 * scaledObject for a deployment
