@@ -4,23 +4,15 @@ This module should run as part of a deployment to ensure a scaledobject has been
 
 ## Version
 
-* developed using Terraform 15.1
-* using the Kubernetes Alpha provider
-  > The provider is not production ready
-
-### Kubernetes alpha provider requirements
-
-* Terraform version 0.14.8+
-* Kubernetes version 1.17.x +
+* Terraform version 1.0.0
+* Kubernetes provider - enable experimental manifest
 
 ## Supports
 
 * scaledObject for a deployment
-  > Job is not supported at this time
+  > **Job is not supported at this time**
 
 ## Examples (Final YAML version)
-
-* [Provider Docs](https://github.com/hashicorp/terraform-provider-kubernetes-alpha)
 
 A scaled object based on Kafka lag and CPU utilization (advanced behavior is set to match the application requirements)
 
@@ -28,16 +20,16 @@ A scaled object based on Kafka lag and CPU utilization (advanced behavior is set
 apiVersion: keda.sh/v1alpha1
 kind: ScaledObject
 metadata:
-  name: test
+  name: router
   namespace: default
   labels:
-    name: test-scaledobject
+    name: router-scaledobject
 spec:
   scaleTargetRef:
     kind: Deployment
     name: router
   pollingInterval: 30
-  cooldownPeriod: 300 # only relevant if min replicas is 0
+  cooldownPeriod: 300
   minReplicaCount: 2
   maxReplicaCount: 8
   advanced:
@@ -57,9 +49,9 @@ spec:
   triggers:
   - type: kafka
     metadata:
-      bootstrapServers: kafka.dev.domain.com:9092
-      consumerGroup: test_app
-      topic: test_1
+      bootstrapServers: kafka-brokers.dev.example.com:9092
+      consumerGroup: router_app
+      topic: router_2
       lagThreshold: "10000"
   - type: cpu
     metadata:
@@ -77,7 +69,7 @@ metadata:
   namespace: default
 spec:
   scaleTargetRef:
-    deploymentName: test-deployment
+    deploymentName: kedademo
   triggers:
   - type: prometheus
     metadata:
